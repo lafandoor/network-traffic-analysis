@@ -1,19 +1,17 @@
-## 🚀 Live Analysis
+# NetFlow Traffic Audit: Network Behavioral Analysis & Forensics
 
-You can view the interactive dashboard live here:  
-**[https://lafandoor.github.io/network-traffic-analysis/](https://lafandoor.github.io/network-traffic-analysis/)**
+This repository documents a professional network traffic analysis project focusing on behavioral baselining, stealth reconnaissance detection, and service exposure mapping. Using a combination of Wireshark and Nmap, this project captures the transition from nominal network operations to active threat progression.
+
+**🔗 [Access Live Forensic Portal](https://lafandoor.github.io/NetFlow-Traffic-Audit/)**
 
 ---
 
-## 🔎 What's in this repo?
+## 🔎 Analysis Objectives
 
-This analysis establishes a baseline for normal network behavior and tracks various stages of an attack—from initial discovery to service interaction. I focused on identifying how automated tools like Nmap behave on the wire and what kind of footprints they leave behind.
-
-### Main Goals
-*   **Deep Packet Inspection**: Investigating large-scale traffic bursts (85k+ packets).
-*   **Attack Tracking**: Catching stealth SYN scans in the reconnaissance phase.
-*   **Data Exposure**: Finding cleartext HTTP requests and mapping service responses.
-*   **Defensive Visibility**: Checking how my local firewall handled unsolicited probes.
+- **Deep Packet Inspection (DPI)**: Detailed analysis of 85,000+ protocol frames across the TCP/IP stack.
+- **Reconnaissance Attribution**: Identifying stealth SYN scan signatures and mapping Nmap's timing templates on the wire.
+- **Exposure Analysis**: Documenting plaintext data leakage in unencrypted HTTP streams and mapping service response headers.
+- **Behavioral Baselining**: Establishing statistical norms for DNS, HTTPS, and local host interactions.
 
 ---
 
