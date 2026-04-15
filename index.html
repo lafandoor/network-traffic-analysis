@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Traffic Analysis Report | Youssef Moataz</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header data-reveal>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <p class="subtitle">15 April 2026 • Wireshark & Nmap Analysis</p>
+                    <h1>Network Traffic Analysis Report <span style="font-size: 1.5rem; color: var(--primary);">v3.0</span></h1>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <a href="captures/last.pcap" download class="badge badge-normal" style="text-decoration: none; cursor: pointer; background: rgba(0,229,255,0.1); padding: 8px 16px; font-size: 0.8rem;">Download .PCAP</a>
+                    <button onclick="window.print()" class="badge badge-normal" style="cursor: pointer; background: transparent; padding: 8px 16px; font-size: 0.8rem;">Export PDF</button>
+                </div>
+            </div>
+            <div style="display: flex; gap: 2rem; margin-top: 2rem;">
+                <div>
+                    <p style="font-size: 0.7rem; color: var(--text-dim);">ANALYST</p>
+                    <p style="font-weight: 600;">Youssef Moataz</p>
+                </div>
+                <div>
+                    <p style="font-size: 0.7rem; color: var(--text-dim);">ENVIRONMENT</p>
+                    <p style="font-family: var(--font-mono);">Kali Linux (VMware NAT)</p>
+                </div>
+                <div>
+                    <p style="font-size: 0.7rem; color: var(--text-dim);">DURATION</p>
+                    <p style="font-family: var(--font-mono);">~12 Minutes</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="metrics" data-reveal>
+            <div class="metric-box">
+                <span class="metric-value">~85,000</span>
+                <span class="metric-label">Total Packets</span>
+            </div>
+            <div class="metric-box">
+                <span class="metric-value">~115/s</span>
+                <span class="metric-label">Avg. Packet Rate</span>
+            </div>
+            <div class="metric-box">
+                <span class="metric-value">3</span>
+                <span class="metric-label">Critical Findings</span>
+            </div>
+            <div class="metric-box">
+                <span class="metric-value">High</span>
+                <span class="metric-label">Risk Profile</span>
+            </div>
+        </section>
+
+        <section class="card" data-reveal>
+            <h2>1. Executive Summary</h2>
+            <p>This report documents a technical analysis of network traffic captured during a simulated cyber attack. The study focused on baseline behavioral mapping and reconnaissance detection.</p>
+            <p style="margin-top: 1rem;">Patterns identified include high-volume SYN scanning, unencrypted data exchange, and service discovery on the local gateway. The findings highlight the importance of network visibility in identifying adversarial behavior early in the attack lifecycle.</p>
+        </section>
+
+        <section class="card" data-reveal>
+            <h2>2. Methodology & Timeline</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>Goals</h3>
+                    <ul style="padding-left: 1.2rem; font-size: 0.9rem; color: var(--text-dim);">
+                        <li>Analyze packet-level traffic flow.</li>
+                        <li>Differentiate between normal and suspicious patterns.</li>
+                        <li>Model attacker behavior using Nmap.</li>
+                        <li>Identify security gaps in local services.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Analysis Phases</h3>
+                    <div style="font-size: 0.85rem; font-family: var(--font-mono); color: var(--primary);">
+                        0-4m: Establishing Baseline (DNS/HTTPS)<br>
+                        4-6m: ICMP Reachability Checks<br>
+                        6-9m: Reconnaissance (SYN Scan)<br>
+                        9-12m: Service Enumeration (HTTP)
+                    </div>
+                </div>
+            </div>
+            <img src="assets/screenshots/Screenshot_2026-04-15_14_52_21.png" class="inline-evidence" alt="Capture Baseline">
+        </section>
+
+        <section class="card" style="border-left: 4px solid var(--accent-red);" data-reveal>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="color: var(--accent-red); margin-bottom: 0;">3. Reconnaissance: Stealth SYN Scan</h2>
+                <span class="badge badge-high">High Severity</span>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <h3>Technical Indicators</h3>
+                    <p style="font-size: 0.9rem;">Source: Kali VM<br>Target Gateway: 192.168.1.1<br>Activity: ~1.3k SYN packets</p>
+                </div>
+                <div>
+                    <h3>Wireshark Search</h3>
+                    <code style="display: block; padding: 10px; background: #000; border-radius: 4px; font-size: 0.8rem;">tcp.flags.syn==1 && tcp.flags.ack==0</code>
+                </div>
+            </div>
+            <img src="assets/screenshots/Screenshot_2026-04-15_14_13_14.png" class="inline-evidence" alt="Nmap Evidence">
+            <div class="evidence-block" style="margin-top: 0.5rem;">
+                [ANALYST NOTE]: Target system was completely silent (no SYN-ACK/RST), confirming filtered port status. Firewall is effective at dropping unsolicited probes.
+            </div>
+        </section>
+
+        <section class="card" style="border-left: 4px solid var(--accent-orange);" data-reveal>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="color: var(--accent-orange); margin-bottom: 0;">4. Exposure: Local Service Discovery</h2>
+                <span class="badge badge-medium">Medium Severity</span>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <h3>Port 80 (Apache)</h3>
+                    <p style="font-size: 0.9rem;">Successful transport-layer connection to <code>127.0.0.1</code> detected. Service is fully interactive.</p>
+                </div>
+                <div>
+                    <h3>Risk Assessment</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-dim);">Active services expand the local attack surface and should be hardened to prevent exploitation.</p>
+                </div>
+            </div>
+            <img src="assets/screenshots/Screenshot_2026-04-15_14_51_06.png" class="inline-evidence" alt="Service Interaction">
+        </section>
+
+        <section class="card" style="border-left: 4px solid var(--accent-red);" data-reveal>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="color: var(--accent-red); margin-bottom: 0;">5. Vulnerability: Cleartext Traffic</h2>
+                <span class="badge badge-high">High Severity</span>
+            </div>
+            <p>Plaintext HTTP traffic captured. All application-layer headers and content are visible to passive monitoring tools on the network.</p>
+            <div class="evidence-block" style="margin-top: 1.5rem;">
+                [NOTE]: Transition to HTTPS/TLS is required to prevent credential theft or session interception during transit.
+            </div>
+        </section>
+
+        <section class="card" data-reveal>
+            <h2>6. SOC Analysis Mapping</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Evidence Observed</th>
+                        <th>Mapped Technique</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Scanning</td>
+                        <td>Massive SYN packet burst</td>
+                        <td>T1046 (Network Scanning)</td>
+                    </tr>
+                    <tr>
+                        <td>Enumeration</td>
+                        <td>Targeted HTTP connection</td>
+                        <td>T1016 (Device Discovery)</td>
+                    </tr>
+                    <tr>
+                        <td>Exfiltration Risk</td>
+                        <td>Plaintext HTTP GET requests</td>
+                        <td>T1041 (Exfiltration)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card" data-reveal>
+            <h2>7. Visual Evidence Appendix</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_13_14.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_13_19.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_13_23.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_13_24.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_13_26.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_13_27.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_13_51.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_14_08.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_14_11.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_14_23.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_50_09.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_50_12.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_50_23.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_50_30.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_50_46.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_51_06.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_52_12.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_52_15.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_52_18.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_52_21.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_52_24.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_52_28.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_52_34.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_52_37.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_54_02.png" alt="Evidence"></div>
+                <div class="gallery-item"><img src="assets/screenshots/Screenshot_2026-04-15_14_54_16.png" alt="Evidence"></div>
+            </div>
+        </section>
+
+        <section class="grid-2" data-reveal>
+            <div class="card">
+                <h3>Recommendations</h3>
+                <ul style="padding-left: 1.2rem; font-size: 0.9rem; color: var(--text-dim);">
+                    <li>Enforce transport security with TLS/HTTPS.</li>
+                    <li>Monitor network logs for abnormal SYN packet rates.</li>
+                    <li>Update firewall to log and alert on dropped recon probes.</li>
+                    <li>Restrict access to local management/dev services.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Tools Used</h3>
+                <div style="font-family: var(--font-mono); font-size: 0.8rem;">
+                    Wireshark 4.x • Nmap 7.95 • Tcpdump • Curl • Apache2
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Youssef Moataz. Final project submission.</p>
+            <p style="margin-top: 0.5rem; font-style: italic; color: var(--primary);">"Visibility is power."</p>
+        </footer>
+    </div>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
